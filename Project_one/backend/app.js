@@ -1,10 +1,26 @@
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+
+// passport config file
+const passportSetup = require("./config/passport-setup");
 
 // import routes login
 const AuthRoutes = require("./routes/auth-routes");
 
 const app = express();
+
+mongoose
+  .connect(process.env.MONGODB_STRING)
+  .then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(
+        "Connected to the database and listening on port",
+        process.env.PORT
+      );
+    });
+  })
+  .catch((error) => console.log(error));
 
 // set view engine
 app.set("view engine", "ejs");
@@ -14,9 +30,4 @@ app.use("/auth", AuthRoutes);
 // create home route
 app.get("/", (req, res) => {
   res.render("home");
-});
-
-const port = process.env.PORT;
-app.listen(port, () => {
-  console.log("app now listening for requests on port 3000");
 });

@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const router = Router();
+const passport = require("passport");
 
 // auth login
 router.get("/login", (req, res) => {
@@ -13,9 +14,15 @@ router.get("/logout", (req, res) => {
 });
 
 // auth Google
-router.get("/google", (req, res) => {
-  // handled with Google
-  res.send("Logging in with Google");
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile"],
+  })
+);
+
+router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
+  res.send("Redirect Google api");
 });
 
 module.exports = router;
