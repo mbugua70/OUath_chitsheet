@@ -1,6 +1,7 @@
 require("dotenv").config();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
+const UserModel = require("../model/userModel.js");
 
 // setting passport
 passport.use(
@@ -12,9 +13,18 @@ passport.use(
       clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
       callbackURL: "/auth/google/redirect",
     },
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       // passport callback function
-      console.log(profile);
+      const currentUser = await UserModel.findOne({ googleId: profile.id });
+      if (currentUser) {
+        console.log(`User already exist`);
+      } else {
+        const userDetails = await UserModel.create({
+          username: profile.displayName,
+          googleId: profile.id,
+        });
+        console.log(`New user created: ${userDetails}`);
+      }
     }
   )
 );
