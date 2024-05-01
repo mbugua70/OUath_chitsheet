@@ -10,6 +10,8 @@ const passportSetup = require("./config/passport-setup");
 // import routes login
 const AuthRoutes = require("./routes/auth-routes");
 
+const app = express();
+
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
@@ -21,7 +23,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const app = express();
 
 mongoose
   .connect(process.env.MONGODB_STRING)
