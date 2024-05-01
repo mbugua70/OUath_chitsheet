@@ -3,6 +3,18 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
 const UserModel = require("../model/userModel.js");
 
+// serializing Users
+passport.serializeUser((user, done) => {
+  // the first underScore represent the error if its there.
+  done(null, user._id);
+})
+
+// deserializing the users
+passport.deserializeUser(async (id, done) => {
+  const serializeUser = await UserModel.findById(id)
+  done(null, serializeUser);
+})
+
 // setting passport
 passport.use(
   new GoogleStrategy(
@@ -18,12 +30,14 @@ passport.use(
       const currentUser = await UserModel.findOne({ googleId: profile.id });
       if (currentUser) {
         console.log(`User already exist`);
+        done(null, currentUser);
       } else {
         const userDetails = await UserModel.create({
           username: profile.displayName,
           googleId: profile.id,
         });
         console.log(`New user created: ${userDetails}`);
+        done(null, userDetails);
       }
     }
   )

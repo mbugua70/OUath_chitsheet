@@ -1,12 +1,25 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
 
 // passport config file
 const passportSetup = require("./config/passport-setup");
 
 // import routes login
 const AuthRoutes = require("./routes/auth-routes");
+
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: process.env.cookieSessionKey,
+  })
+);
+
+// intializing passportjs
+app.use(passport.initialize());
+app.use(passport.session());
 
 const app = express();
 
