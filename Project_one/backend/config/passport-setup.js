@@ -4,14 +4,14 @@ const GoogleStrategy = require("passport-google-oauth20");
 const UserModel = require("../model/userModel.js");
 
 // serializing Users
-passport.serializeUser((userdata, done) => {
+passport.serializeUser((user, done) => {
   // the first underScore represent the error if its there.
-  done(null, userdata);
+  done(null, user.id);
 });
 
 // deserializing the users
 passport.deserializeUser(async (id, done) => {
-  const user = await UserModel.findById(id);
+  const user = await UserModel.findById({ id });
   done(null, user);
 });
 
@@ -24,6 +24,7 @@ passport.use(
       clientID: process.env["GOOGLE_CLIENT_ID"],
       clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
       callbackURL: "/auth/google/redirect",
+
     },
     async (accessToken, refreshToken, profile, done) => {
       // passport callback function
