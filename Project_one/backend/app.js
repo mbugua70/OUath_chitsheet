@@ -1,14 +1,17 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+// import routes login
+const AuthRoutes = require("./routes/auth-routes");
+const UserRoutes = require("./routes/profile-routes");
+const passportSetup = require("./config/passport-setup");
+
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 
 // passport config file
-const passportSetup = require("./config/passport-setup");
 
-// import routes login
-const AuthRoutes = require("./routes/auth-routes");
+
 
 const app = express();
 
@@ -22,7 +25,6 @@ app.use(
 // intializing passportjs
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 mongoose
   .connect(process.env.MONGODB_STRING)
@@ -40,6 +42,7 @@ mongoose
 app.set("view engine", "ejs");
 
 app.use("/auth", AuthRoutes);
+app.use("/profile", UserRoutes);
 
 // create home route
 app.get("/", (req, res) => {
