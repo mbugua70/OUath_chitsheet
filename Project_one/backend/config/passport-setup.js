@@ -11,7 +11,7 @@ passport.serializeUser((user, done) => {
 
 // deserializing the users
 passport.deserializeUser(async (id, done) => {
-  const user = await UserModel.findById({ id });
+  const user = await UserModel.findById(id);
   done(null, user);
 });
 
@@ -24,7 +24,6 @@ passport.use(
       clientID: process.env["GOOGLE_CLIENT_ID"],
       clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
       callbackURL: "/auth/google/redirect",
-
     },
     async (accessToken, refreshToken, profile, done) => {
       // passport callback function
